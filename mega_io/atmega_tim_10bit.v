@@ -184,17 +184,8 @@ wire clk_active = |TCCRB[`CS03:`CS00];
 
 /* Prescaller */
 reg [13:0]presc_cnt;
-reg from_core_clk_div;
 
-always @ (posedge rst or posedge clk_pll)
-begin
-	if(rst)
-		from_core_clk_div <= 2'h0;
-	else
-		from_core_clk_div <= from_core_clk_div + 2'h1;
-end
-
-always @(posedge rst or posedge pll_enabled ? clk_pll : from_core_clk_div)
+always @(posedge rst or posedge clk_pll)
 begin
 	if(rst)
 	begin
@@ -208,7 +199,7 @@ end
 /* !Prescaller */
 
 /* Prescaller selection implementation */
-wire [15:0]tim_clks = {presc_cnt, pll_enabled ? clk_pll : from_core_clk_div, 1'b0};
+wire [15:0]tim_clks = {presc_cnt, clk_pll, 1'b0};
 always @ *
 begin
 	clk_int = tim_clks[TCCRB[`CS03:`CS00]];
