@@ -390,7 +390,13 @@ OSERDESE2 #(
 	.TBYTE_SRC("FALSE"),    // Tristate byte source (FALSE, TRUE)
 	.TRISTATE_WIDTH(1)      // 3-state converter width (1,4)
 	) OSERDESE2_0_LOW_inst (
+	.OFB(),             // 1-bit output: Feedback path for data
 	.OQ(hdmi_tx_p_0),               // 1-bit output: Data path output
+	.SHIFTOUT1(),
+	.SHIFTOUT2(),
+	.TBYTEOUT(),   // 1-bit output: Byte group tristate
+	.TFB(),             // 1-bit output: 3-state control
+	.TQ(),               // 1-bit output: 3-state control
 	.CLK(clk),             // 1-bit input: High speed clock
 	.CLKDIV(clk_5),       // 1-bit input: Divided clock
 	// D1 - D8: 1-bit (each) input: Parallel data inputs (1-bit each)
@@ -405,7 +411,13 @@ OSERDESE2 #(
 	.OCE(1'b1),             // 1-bit input: Output data clock enable
 	.RST(rst),             // 1-bit input: Reset
 	.SHIFTIN1(OSERDES_SHIFT1_CH0),
-	.SHIFTIN2(OSERDES_SHIFT2_CH0)
+	.SHIFTIN2(OSERDES_SHIFT2_CH0),
+	.T1(),
+	.T2(),
+	.T3(),
+	.T4(),
+	.TBYTEIN(),     // 1-bit input: Byte group tristate
+	.TCE()              // 1-bit input: 3-state clock enable
 	);
 
 OSERDESE2 #(
@@ -421,15 +433,35 @@ OSERDESE2 #(
 	.TBYTE_SRC("FALSE"),    // Tristate byte source (FALSE, TRUE)
 	.TRISTATE_WIDTH(1)      // 3-state converter width (1,4)
 	) OSERDESE2_0_HIGH_inst (
+	.OFB(),             // 1-bit output: Feedback path for data
+	.OQ(),               // 1-bit output: Data path output
 	.SHIFTOUT1(OSERDES_SHIFT1_CH0),
 	.SHIFTOUT2(OSERDES_SHIFT2_CH0),
+	.TBYTEOUT(),   // 1-bit output: Byte group tristate
+	.TFB(),             // 1-bit output: 3-state control
+	.TQ(),               // 1-bit output: 3-state control
 	.CLK(clk),             // 1-bit input: High speed clock
 	.CLKDIV(clk_5),       // 1-bit input: Divided clock
 	// D1 - D8: 1-bit (each) input: Parallel data inputs (1-bit each)
+	.D1(),
+	.D2(),
 	.D3(hdmi_tx_symbol_0_D8),
 	.D4(hdmi_tx_symbol_0_D9),
+	.D5(),
+	.D6(),
+	.D7(),
+	.D8(),
 	.OCE(1'b1),             // 1-bit input: Output data clock enable
-	.RST(rst)             // 1-bit input: Reset
+	.RST(rst),             // 1-bit input: Reset
+	.SHIFTIN1(),
+	.SHIFTIN2(),
+		  // T1 - T4: 1-bit (each) input: Parallel 3-state inputs
+	.T1(),
+	.T2(),
+	.T3(),
+	.T4(),
+	.TBYTEIN(),     // 1-bit input: Byte group tristate
+	.TCE()              // 1-bit input: 3-state clock enable
 	);
 
 /* Channel 1 OSERDESE2 (two phases of 10 bits each) */
@@ -446,7 +478,13 @@ OSERDESE2 #(
 	.TBYTE_SRC("FALSE"),    // Tristate byte source (FALSE, TRUE)
 	.TRISTATE_WIDTH(1)      // 3-state converter width (1,4)
 	) OSERDESE2_1_LOW_inst (
+	.OFB(),             // 1-bit output: Feedback path for data
 	.OQ(hdmi_tx_p_1),               // 1-bit output: Data path output
+	.SHIFTOUT1(),
+	.SHIFTOUT2(),
+	.TBYTEOUT(),   // 1-bit output: Byte group tristate
+	.TFB(),             // 1-bit output: 3-state control
+	.TQ(),               // 1-bit output: 3-state control
 	.CLK(clk),             // 1-bit input: High speed clock
 	.CLKDIV(clk_5),       // 1-bit input: Divided clock
 	// D1 - D8: 1-bit (each) input: Parallel data inputs (1-bit each)
@@ -461,7 +499,13 @@ OSERDESE2 #(
 	.OCE(1'b1),             // 1-bit input: Output data clock enable
 	.RST(rst),             // 1-bit input: Reset
 	.SHIFTIN1(OSERDES_SHIFT1_CH1),
-	.SHIFTIN2(OSERDES_SHIFT2_CH1)
+	.SHIFTIN2(OSERDES_SHIFT2_CH1),
+	.T1(),
+	.T2(),
+	.T3(),
+	.T4(),
+	.TBYTEIN(),     // 1-bit input: Byte group tristate
+	.TCE()              // 1-bit input: 3-state clock enable
 	);
 
 OSERDESE2 #(
@@ -477,15 +521,35 @@ OSERDESE2 #(
 	.TBYTE_SRC("FALSE"),    // Tristate byte source (FALSE, TRUE)
 	.TRISTATE_WIDTH(1)      // 3-state converter width (1,4)
 	) OSERDESE2_1_HIGH_inst (
+	.OFB(),             // 1-bit output: Feedback path for data
+	.OQ(),               // 1-bit output: Data path output
 	.SHIFTOUT1(OSERDES_SHIFT1_CH1),
 	.SHIFTOUT2(OSERDES_SHIFT2_CH1),
+	.TBYTEOUT(),   // 1-bit output: Byte group tristate
+	.TFB(),             // 1-bit output: 3-state control
+	.TQ(),               // 1-bit output: 3-state control
 	.CLK(clk),             // 1-bit input: High speed clock
 	.CLKDIV(clk_5),       // 1-bit input: Divided clock
 	// D1 - D8: 1-bit (each) input: Parallel data inputs (1-bit each)
+	.D1(),
+	.D2(),
 	.D3(hdmi_tx_symbol_1_D8),
 	.D4(hdmi_tx_symbol_1_D9),
+	.D5(),
+	.D6(),
+	.D7(),
+	.D8(),
 	.OCE(1'b1),             // 1-bit input: Output data clock enable
-	.RST(rst)             // 1-bit input: Reset
+	.RST(rst),             // 1-bit input: Reset
+	.SHIFTIN1(),
+	.SHIFTIN2(),
+		  // T1 - T4: 1-bit (each) input: Parallel 3-state inputs
+	.T1(),
+	.T2(),
+	.T3(),
+	.T4(),
+	.TBYTEIN(),     // 1-bit input: Byte group tristate
+	.TCE()              // 1-bit input: 3-state clock enable
 	);
 
 /* Channel 2 OSERDESE2 (two phases of 10 bits each) */
@@ -502,7 +566,13 @@ OSERDESE2 #(
 	.TBYTE_SRC("FALSE"),    // Tristate byte source (FALSE, TRUE)
 	.TRISTATE_WIDTH(1)      // 3-state converter width (1,4)
 	) OSERDESE2_2_LOW_inst (
+	.OFB(),             // 1-bit output: Feedback path for data
 	.OQ(hdmi_tx_p_2),               // 1-bit output: Data path output
+	.SHIFTOUT1(),
+	.SHIFTOUT2(),
+	.TBYTEOUT(),   // 1-bit output: Byte group tristate
+	.TFB(),             // 1-bit output: 3-state control
+	.TQ(),               // 1-bit output: 3-state control
 	.CLK(clk),             // 1-bit input: High speed clock
 	.CLKDIV(clk_5),       // 1-bit input: Divided clock
 	// D1 - D8: 1-bit (each) input: Parallel data inputs (1-bit each)
@@ -517,7 +587,13 @@ OSERDESE2 #(
 	.OCE(1'b1),             // 1-bit input: Output data clock enable
 	.RST(rst),             // 1-bit input: Reset
 	.SHIFTIN1(OSERDES_SHIFT1_CH2),
-	.SHIFTIN2(OSERDES_SHIFT2_CH2)
+	.SHIFTIN2(OSERDES_SHIFT2_CH2),
+	.T1(),
+	.T2(),
+	.T3(),
+	.T4(),
+	.TBYTEIN(),     // 1-bit input: Byte group tristate
+	.TCE()              // 1-bit input: 3-state clock enable
 	);
 
 OSERDESE2 #(
@@ -533,15 +609,35 @@ OSERDESE2 #(
 	.TBYTE_SRC("FALSE"),    // Tristate byte source (FALSE, TRUE)
 	.TRISTATE_WIDTH(1)      // 3-state converter width (1,4)
 	) OSERDESE2_2_HIGH_inst (
+	.OFB(),             // 1-bit output: Feedback path for data
+	.OQ(),               // 1-bit output: Data path output
 	.SHIFTOUT1(OSERDES_SHIFT1_CH2),
 	.SHIFTOUT2(OSERDES_SHIFT2_CH2),
+	.TBYTEOUT(),   // 1-bit output: Byte group tristate
+	.TFB(),             // 1-bit output: 3-state control
+	.TQ(),               // 1-bit output: 3-state control
 	.CLK(clk),             // 1-bit input: High speed clock
 	.CLKDIV(clk_5),       // 1-bit input: Divided clock
 	// D1 - D8: 1-bit (each) input: Parallel data inputs (1-bit each)
+	.D1(),
+	.D2(),
 	.D3(hdmi_tx_symbol_2_D8),
 	.D4(hdmi_tx_symbol_2_D9),
+	.D5(),
+	.D6(),
+	.D7(),
+	.D8(),
 	.OCE(1'b1),             // 1-bit input: Output data clock enable
-	.RST(rst)             // 1-bit input: Reset
+	.RST(rst),             // 1-bit input: Reset
+	.SHIFTIN1(),
+	.SHIFTIN2(),
+		  // T1 - T4: 1-bit (each) input: Parallel 3-state inputs
+	.T1(),
+	.T2(),
+	.T3(),
+	.T4(),
+	.TBYTEIN(),     // 1-bit input: Byte group tristate
+	.TCE()              // 1-bit input: 3-state clock enable
 	);
 
 end
