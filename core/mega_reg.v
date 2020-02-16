@@ -20,7 +20,7 @@
 
 `timescale 1ns / 1ps
 
-`include "xmega_v.v"
+`include "mega_def.v"
 
 module mega_regs #
 	(
@@ -44,9 +44,9 @@ module mega_regs #
 generate
 if(PLATFORM == "XILINX")
 begin
-(* ram_style="block" *)
+//(* ram_style="block" *)
 reg [7:0]REGL[0:15];
-(* ram_style="block" *)
+//(* ram_style="block" *)
 reg [7:0]REGH[0:15];
 
 wire [3:0]rda_int = rdm ? rda[3:0] : rda[4:1];
