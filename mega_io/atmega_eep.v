@@ -68,6 +68,14 @@ reg [7:0]read_tmp;
 reg int_p;
 reg int_n;
 
+integer clear_cnt;
+initial begin
+	for(clear_cnt = 0; clear_cnt < EEP_SIZE; clear_cnt = clear_cnt + 1)
+	begin : CLEAR_EEP
+		eep[clear_cnt] = 8'h00;
+	end
+end
+
 always @ *
 begin
 	bus_out = 8'h00;
@@ -82,7 +90,7 @@ begin
 	end
 end
 
-always @ (posedge rst or posedge clk)
+always @ (posedge clk)
 begin
 	if(rst)
 	begin
