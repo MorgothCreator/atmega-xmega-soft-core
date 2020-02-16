@@ -23,10 +23,14 @@
 `include "mega_def.v"
 
 `define PLATFORM 				"XILINX"
-`define USE_TIMER_0				"TRUE"
-`define USE_TIMER_1				"TRUE"
-`define USE_TIMER_3				"TRUE"
-`define USE_TIMER_4				"TRUE"
+//`define USE_PLL
+`define USE_TIMER_0
+`define USE_TIMER_1
+`define USE_TIMER_3
+`define USE_TIMER_4
+`define USE_SPI_1
+//`define USE_UART_1
+`define USE_EEPROM
 
 
 /* ATMEGA32U4 is a "MEGA_ENHANCED_128K" family */
@@ -74,7 +78,7 @@ module tim_013_prescaller (
 );
 reg [9:0]cnt;
 
-always @(posedge rst or posedge clk)
+always @(posedge clk)
 begin
 	if(rst)
 	begin
@@ -95,7 +99,20 @@ endmodule
 /* !TIMMERS PRESCALLERS MODULE */
 
 module atmega32u4 # (
-	parameter ROM_PATH = ""
+	parameter ROM_PATH = "",
+	parameter USE_PIO_B = "TRUE",
+	parameter USE_PIO_C = "TRUE",
+	parameter USE_PIO_D = "TRUE",
+	parameter USE_PIO_E = "TRUE",
+	parameter USE_PIO_F = "TRUE",
+	parameter USE_PLL = "TRUE",
+	parameter USE_TIMER_0 = "TRUE",
+	parameter USE_TIMER_1 = "TRUE",
+	parameter USE_TIMER_3 = "TRUE",
+	parameter USE_TIMER_4 = "TRUE",
+	parameter USE_SPI_1 = "TRUE",
+	parameter USE_UART_1 = "TRUE",
+	parameter USE_EEPROM = "TRUE"
 )(
 	input rst,
 	input clk,
@@ -169,6 +186,7 @@ wire tim4_occp_io_connact;
 wire tim4_occn_io_connact;
 wire tim4_ocdp_io_connact;
 wire tim4_ocdn_io_connact;
+wire uart_tx_io_connact;
 wire spi_io_connect;
 wire io_conn_slave;
 /* !IO PIN FUNCTION CHANGE REQUEST */
@@ -189,6 +207,8 @@ wire tim4_ocd;
 wire spi_scl;
 wire spi_miso;
 wire spi_mosi;
+wire uart_tx;
+wire uart_rx;
 wire usb_ck_out;
 wire tim_ck_out;
 /* !IO ALTERNATIVE FUNCTION */
@@ -239,10 +259,11 @@ assign pd_in[4] = pd[4];
 assign pd_in[5] = pd[5];
 assign pd_in[6] = pd[6];
 assign pd_in[7] = pd[7];
+assign uart_rx = pd[2];
 assign pd[0] = tim0_ocb_io_connact ? tim0_ocb : (piod_out_io_connect[0] ? pd_out[0] : 1'bz);
 assign pd[1] = piod_out_io_connect[1] ? pd_out[1] : 1'bz;
 assign pd[2] = piod_out_io_connect[2] ? pd_out[2] : 1'bz;
-assign pd[3] = piod_out_io_connect[3] ? pd_out[3] : 1'bz;
+assign pd[3] = uart_tx_io_connact ? uart_tx : (piod_out_io_connect[3] ? pd_out[3] : 1'bz);
 assign pd[4] = piod_out_io_connect[4] ? pd_out[4] : 1'bz;
 assign pd[5] = piod_out_io_connect[5] ? pd_out[5] : 1'bz;
 assign pd[6] = piod_out_io_connect[6] ? pd_out[6] : 1'bz;
@@ -310,9 +331,9 @@ wire int_timer0_compa;
 wire int_timer0_compb;
 wire int_timer0_ovf;
 wire int_spi_stc;
-wire int_usart1_rx = 0;
-wire int_usart1_udre = 0;
-wire int_usart1_tx = 0;
+wire int_usart1_rx;
+wire int_usart1_udre;
+wire int_usart1_tx;
 wire int_analog_comp = 0;
 wire int_adc = 0;
 wire int_ee_ready;
@@ -355,9 +376,9 @@ wire int_timer0_compa_rst;
 wire int_timer0_compb_rst;
 wire int_timer0_ovf_rst;
 wire int_spi_stc_rst;
-wire int_usart1_rx_rst = 0;
-wire int_usart1_udre_rst = 0;
-wire int_usart1_tx_rst = 0;
+wire int_usart1_rx_rst;
+wire int_usart1_udre_rst;
+wire int_usart1_tx_rst;
 wire int_analog_comp_rst = 0;
 wire int_adc_rst = 0;
 wire int_ee_ready_rst;
@@ -377,6 +398,9 @@ wire int_timer4_fpf_rst = 0;
 
 /* PORTB */
 wire [7:0]io_pb_d_out;
+generate
+if (USE_PIO_B == "TRUE")
+begin
 atmega_pio # (
 	.PLATFORM(`PLATFORM),
 	.BUS_ADDR_IO_LEN(6),
@@ -402,10 +426,19 @@ atmega_pio # (
 	.pio_out_io_connect(piob_out_io_connect),
 	.debug()
 	);
+end
+else
+begin
+assign io_pb_d_out = 0;
+end
+endgenerate
 /* !PORTB */
 
 /* PORTC */
 wire [7:0]io_pc_d_out;
+generate
+if (USE_PIO_C == "TRUE")
+begin
 atmega_pio # (
 	.PLATFORM(`PLATFORM),
 	.BUS_ADDR_IO_LEN(6),
@@ -431,10 +464,19 @@ atmega_pio # (
 	.pio_out_io_connect(pioc_out_io_connect),
 	.debug()
 	);
+end
+else
+begin
+assign io_pc_d_out = 0;
+end
+endgenerate
 /* !PORTC */
 
 /* PORTD */
 wire [7:0]io_pd_d_out;
+generate
+if (USE_PIO_D == "TRUE")
+begin
 atmega_pio # (
 	.PLATFORM(`PLATFORM),
 	.BUS_ADDR_IO_LEN(6),
@@ -460,10 +502,19 @@ atmega_pio # (
 	.pio_out_io_connect(piod_out_io_connect),
 	.debug()
 	);
+end
+else
+begin
+assign io_pd_d_out = 0;
+end
+endgenerate
 /* !PORTD */
 
 /* PORTE */
 wire [7:0]io_pe_d_out;
+generate
+if (USE_PIO_E == "TRUE")
+begin
 atmega_pio # (
 	.PLATFORM(`PLATFORM),
 	.BUS_ADDR_IO_LEN(6),
@@ -489,10 +540,19 @@ atmega_pio # (
 	.pio_out_io_connect(pioe_out_io_connect),
 	.debug()
 	);
+end
+else
+begin
+assign io_pe_d_out = 0;
+end
+endgenerate
 /* !PORTE */
 
 /* PORTF */
 wire [7:0]io_pf_d_out;
+generate
+if (USE_PIO_F == "TRUE")
+begin
 atmega_pio # (
 	.PLATFORM(`PLATFORM),
 	.BUS_ADDR_IO_LEN(6),
@@ -518,10 +578,19 @@ atmega_pio # (
 	.pio_out_io_connect(piof_out_io_connect),
 	.debug()
 	);
+end
+else
+begin
+assign io_pf_d_out = 0;
+end
+endgenerate
 /* !PORTF */
 
 /* SPI */
 wire [7:0]io_spi_d_out;
+generate
+if (USE_SPI_1 == "TRUE")
+begin
 atmega_spi_m # (
 	.PLATFORM(`PLATFORM),
 	.BUS_ADDR_IO_LEN(6),
@@ -547,7 +616,70 @@ atmega_spi_m # (
 	.miso(spi_miso),
 	.mosi(spi_mosi)
 	);
+end
+else
+begin
+assign io_spi_d_out = 0;
+assign int_spi_stc = 1'b0;
+assign spi_io_connect = 1'b0;
+end
+endgenerate
 /* !SPI */
+/* UART */
+wire [7:0]io_uart0_d_out;
+wire [7:0]dat_uart0_d_out;
+generate
+if (USE_UART_1 == "TRUE")
+begin
+atmega_uart # (
+	.PLATFORM("XILINX"),
+	.BUS_ADDR_IO_LEN(6),
+	.BUS_ADDR_DATA_LEN(8),
+	.UDR_ADDR('hce),
+	.UCSRA_ADDR('hc8),
+	.UCSRB_ADDR('hc9),
+	.UCSRC_ADDR('hca),
+	.UCSRD_ADDR('h00),
+	.UBRRL_ADDR('hcc),
+	.UBRRH_ADDR('hcd),
+	.USE_TX("TRUE"),
+	.USE_RX("TRUE")
+	)uart(
+	.rst(rst),
+	.clk(clk),
+	.addr_io(io_addr),
+	.wr_io(io_write),
+	.rd_io(io_read),
+	.bus_io_in(io_out),
+	.bus_io_out(io_uart0_d_out),
+	.addr_dat(data_addr[7:0]),
+	.wr_dat(data_write & ~ram_sel),
+	.rd_dat(data_read & ~ram_sel),
+	.bus_dat_in(core_data_out),
+	.bus_dat_out(dat_uart0_d_out),
+	.rxc_int(int_usart1_rx),
+	.rxc_int_rst(int_usart1_rx_rst),
+	.txc_int(int_usart1_tx),
+	.txc_int_rst(int_usart1_tx_rst),
+	.udre_int(int_usart1_udre),
+	.udre_int_rst(int_usart1_udre_rst),
+
+	.rx(uart_rx),
+	.tx(uart_tx),
+	.tx_connect(uart_tx_io_connact)
+	);
+end
+else
+begin
+assign io_uart0_d_out = 0;
+assign dat_uart0_d_out = 1'b0;
+assign int_usart1_rx = 1'b0;
+assign int_usart1_tx = 1'b0;
+assign int_usart1_udre = 1'b0;
+assign uart_tx_io_connact = 1'b0;
+end
+endgenerate
+/* UART */
 
 /* TIMER PRESCALLER */
 wire clk8;
@@ -567,7 +699,9 @@ tim_013_prescaller tim_013_prescaller_inst(
 /* TIMER 0 */
 wire [7:0]io_tim0_d_out;
 wire [7:0]dat_tim0_d_out;
-`ifdef USE_TIMER_0
+generate
+if (USE_TIMER_0 == "TRUE")
+begin
 atmega_tim_8bit # (
 	.PLATFORM("XILINX"),
 	.USE_OCRB("TRUE"),
@@ -611,13 +745,25 @@ atmega_tim_8bit # (
 	.oca_io_connect(tim0_oca_io_connact),
 	.ocb_io_connect(tim0_ocb_io_connact)
 	);
-`endif
+end
+else
+begin
+assign io_tim0_d_out = 0;
+assign dat_tim0_d_out = 0;
+assign int_timer0_ovf = 1'b0;
+assign int_timer0_compa = 1'b0;
+assign tim0_oca_io_connact = 1'b0;
+assign tim0_ocb_io_connact = 1'b0;
+end
+endgenerate
 /* !TIMER 0 */
 
 /* TIMER 1 */
 wire [7:0]io_tim1_d_out;
 wire [7:0]dat_tim1_d_out;
-`ifdef USE_TIMER_1
+generate
+if (USE_TIMER_1 == "TRUE")
+begin
 atmega_tim_16bit # (
 	.PLATFORM("XILINX"),
 	.USE_OCRB("TRUE"),
@@ -682,13 +828,21 @@ atmega_tim_16bit # (
 	.occ_io_connect(tim1_occ_io_connact),
 	.ocd_io_connect()
 	);
-`endif
+end
+else
+begin
+assign io_tim1_d_out = 0;
+assign dat_tim1_d_out = 0;
+end
+endgenerate
 /* !TIMER 1 */
 
 /* TIMER 3 */
 wire [7:0]io_tim3_d_out;
 wire [7:0]dat_tim3_d_out;
-`ifdef USE_TIMER_3
+generate
+if (USE_TIMER_3 == "TRUE")
+begin
 atmega_tim_16bit # (
 	.PLATFORM("XILINX"),
 	.USE_OCRB("TRUE"),
@@ -753,11 +907,20 @@ atmega_tim_16bit # (
 	.occ_io_connect(tim3_occ_io_connact),
 	.ocd_io_connect()
 	);
-`endif
+end
+else
+begin
+assign io_tim3_d_out = 0;
+assign dat_tim3_d_out = 0;
+end
+endgenerate
 /* !TIMER 3 */
 
 /* PLL */
 wire [7:0]io_pll_d_out;
+generate
+if(USE_PLL == "TRUE")
+begin
 atmega_pll # (
 	.PLATFORM("XILINX"),
 	.BUS_ADDR_DATA_LEN(6),
@@ -778,12 +941,20 @@ atmega_pll # (
 	.usb_ck_out(usb_ck_out),
 	.tim_ck_out(tim_ck_out)
 	);
+end
+else
+begin
+	assign io_pll_d_out = 0;
+end
+endgenerate
 /* !PLL */
 
 /* TIMER 4 */
 wire [7:0]io_tim4_d_out;
 wire [7:0]dat_tim4_d_out;
-`ifdef USE_TIMER_4
+generate
+if (USE_TIMER_4 == "TRUE")
+begin
 atmega_tim_10bit # (
 	.PLATFORM("XILINX"),
 	.USE_OCRA("TRUE"),
@@ -844,11 +1015,20 @@ atmega_tim_10bit # (
 	.ocdp_io_connect(tim4_ocdp_io_connact),
 	.ocdn_io_connect(tim4_ocdn_io_connact)
 	);
-`endif
+end
+else
+begin
+assign io_tim4_d_out = 0;
+assign dat_tim4_d_out = 0;
+end
+endgenerate
 /* !TIMER 4 */
 
 /* EEPROM */
 wire [7:0]io_eeprom_d_out;
+generate
+if (USE_EEPROM == "TRUE")
+begin
 atmega_eep # (
 	.PLATFORM("XILINX"),
 	.BUS_ADDR_IO_LEN(6),
@@ -876,6 +1056,12 @@ atmega_eep # (
 	.content_modifyed(content_modifyed),
 	.debug()
 	);
+end
+else
+begin
+assign io_eeprom_d_out = 0;
+end
+endgenerate
 /* !EEPROM */
 
 /* ROM APP */
@@ -906,7 +1092,7 @@ mega_ram  #(
 
 /* DATA BUS IN DEMULTIPLEXER */
 io_bus_dmux #(
-	.NR_OF_BUSSES_IN(12)
+	.NR_OF_BUSSES_IN(13)
 	)
 	io_bus_dmux_inst(
 	.bus_in({
@@ -921,7 +1107,8 @@ io_bus_dmux #(
 	io_tim3_d_out,
 	io_tim4_d_out,
 	io_pll_d_out,
-	io_eeprom_d_out
+	io_eeprom_d_out,
+	io_uart0_d_out
 	}),
 	.bus_out(io_in)
 	);
@@ -929,7 +1116,7 @@ io_bus_dmux #(
 
 /* IO BUS IN DEMULTIPLEXER */
 io_bus_dmux #(
-	.NR_OF_BUSSES_IN(5)
+	.NR_OF_BUSSES_IN(6)
 	)
 	ram_bus_dmux_inst(
 	.bus_in({
@@ -937,7 +1124,8 @@ io_bus_dmux #(
 	dat_tim0_d_out,
 	dat_tim1_d_out,
 	dat_tim3_d_out,
-	dat_tim4_d_out
+	dat_tim4_d_out,
+	dat_uart0_d_out
 	}),
 	.bus_out(core_data_in)
 	);
