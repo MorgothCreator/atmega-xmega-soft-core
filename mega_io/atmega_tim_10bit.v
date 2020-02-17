@@ -398,7 +398,7 @@ begin
 end
 
 /* Set "oc" pin on specified conditions*/
-always @ (posedge rst or posedge clk_pll)
+always @ (posedge rst or posedge pll_enabled ? clk_pll : clk)
 begin
 	if(rst)
 	begin
@@ -483,10 +483,10 @@ begin
 		if(ocrd_int_rst)
 		begin
 			TIFR[`OCF0D] <= 1'b0;
-		end
+		end 
 		// Sample one IO core clock once every prescaller positive edge clock.
 		clk_int_del <= clk_int; // Shift prescaller clock to a delay register every IO core positive edge clock to detect prescaller positive edges.
-		if(((~clk_int_del & clk_int) || (TCCRB[`CS03:`CS00] == 4'b0001 & pll_enabled)) && TCCRB[`CS03:`CS00] != 4'b0000) // If prescaller is 1 we bypass the prescaller clock edge detector, if 0, we disable the timer, if pll is disabled, the counter clock is maximum clk/2.
+		if(((~clk_int_del & clk_int) || TCCRB[`CS03:`CS00] == 4'b0001) && TCCRB[`CS03:`CS00] != 4'b0000) // If prescaller is 1 we bypass the prescaller clock edge detector, if 0, we disable the timer, if pll is disabled, the counter clock is maximum clk/2.
 		begin
 			if(up_count)
 			begin
