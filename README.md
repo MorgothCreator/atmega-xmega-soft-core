@@ -6,6 +6,21 @@
 
  This design include all most used IO's, priority interrupt module and watchdog module, except UART that is in development.
 
+  # V00.02.16:
+
+ ```
+  -Fix SBIW instruction due to wrong description in oficial documentation.
+  -Add simple UART interface.
+  -Optimize core code and make it more readable.
+
+ TO DO:
+ 
+ Observed some issues with TIM3 on 'arduboy-rtl-emulator' project, so is needed to 
+ "Fix situations where on random times at core reset the TIM3 prescaller is setup at 
+ wrong value ( at /64 instead of /8 core clock )" need to check in what situation 
+ this issue is manifesting.
+ ```
+
  # V00.02.10:
 
  ```
