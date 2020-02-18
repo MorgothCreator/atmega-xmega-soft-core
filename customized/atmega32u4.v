@@ -170,23 +170,23 @@ wire [7:0]pioc_out_io_connect;
 wire [7:0]piod_out_io_connect;
 wire [7:0]pioe_out_io_connect;
 wire [7:0]piof_out_io_connect;
-wire tim0_oca_io_connact;
-wire tim0_ocb_io_connact;
-wire tim1_oca_io_connact;
-wire tim1_ocb_io_connact;
-wire tim1_occ_io_connact;
-wire tim3_oca_io_connact;
-wire tim3_ocb_io_connact;
-wire tim3_occ_io_connact;
-wire tim4_ocap_io_connact;
-wire tim4_ocan_io_connact;
-wire tim4_ocbp_io_connact;
-wire tim4_ocbn_io_connact;
-wire tim4_occp_io_connact;
-wire tim4_occn_io_connact;
-wire tim4_ocdp_io_connact;
-wire tim4_ocdn_io_connact;
-wire uart_tx_io_connact;
+wire tim0_oca_io_connect;
+wire tim0_ocb_io_connect;
+wire tim1_oca_io_connect;
+wire tim1_ocb_io_connect;
+wire tim1_occ_io_connect;
+wire tim3_oca_io_connect;
+wire tim3_ocb_io_connect;
+wire tim3_occ_io_connect;
+wire tim4_ocap_io_connect;
+wire tim4_ocan_io_connect;
+wire tim4_ocbp_io_connect;
+wire tim4_ocbn_io_connect;
+wire tim4_occp_io_connect;
+wire tim4_occn_io_connect;
+wire tim4_ocdp_io_connect;
+wire tim4_ocdn_io_connect;
+wire uart_tx_io_connect;
 wire spi_io_connect;
 wire io_conn_slave;
 /* !IO PIN FUNCTION CHANGE REQUEST */
@@ -230,9 +230,9 @@ assign pb[1] = (spi_io_connect & ~io_conn_slave) ? spi_scl : (piob_out_io_connec
 assign pb[2] = (spi_io_connect & ~io_conn_slave) ? spi_mosi : (piob_out_io_connect[2] ? pb_out[2] : 1'bz);
 assign pb[3] = (spi_io_connect & io_conn_slave) ? spi_miso : (piob_out_io_connect[3] ? pb_out[3] : 1'bz);
 assign pb[4] = (piob_out_io_connect[4] ? pb_out[4] : 1'bz);
-assign pb[5] = tim1_oca_io_connact ? tim1_oca : (piob_out_io_connect[5] ? pb_out[5] : 1'bz);
-assign pb[6] = tim1_ocb_io_connact ? tim1_ocb : (piob_out_io_connect[6] ? pb_out[6] : 1'bz);
-assign pb[7] = tim0_oca_io_connact ? tim0_oca : (tim1_occ_io_connact ? tim1_occ : (piob_out_io_connect[7] ? pb_out[7] : 1'bz));
+assign pb[5] = tim1_oca_io_connect ? tim1_oca : (piob_out_io_connect[5] ? pb_out[5] : 1'bz);
+assign pb[6] = tim1_ocb_io_connect ? tim1_ocb : (piob_out_io_connect[6] ? pb_out[6] : 1'bz);
+assign pb[7] = tim0_oca_io_connect ? tim0_oca : (tim1_occ_io_connect ? tim1_occ : (piob_out_io_connect[7] ? pb_out[7] : 1'bz));
 
 assign pc_in[0] = pc[0];
 assign pc_in[1] = pc[1];
@@ -248,8 +248,8 @@ assign pc[2] = pioc_out_io_connect[2] ? pc_out[2] : 1'bz;
 assign pc[3] = pioc_out_io_connect[3] ? pc_out[3] : 1'bz;
 assign pc[4] = pioc_out_io_connect[4] ? pc_out[4] : 1'bz;
 assign pc[5] = pioc_out_io_connect[5] ? pc_out[5] : 1'bz;
-assign pc[6] = tim4_ocan_io_connact ? ~tim4_oca : (tim3_oca_io_connact ? tim3_oca : (pioc_out_io_connect[6] ? pc_out[6] : 1'bz));
-assign pc[7] = tim4_ocap_io_connact ? tim4_oca : (pioc_out_io_connect[7] ? pc_out[7] : 1'bz);
+assign pc[6] = tim4_ocan_io_connect ? ~tim4_oca : (tim3_oca_io_connect ? tim3_oca : (pioc_out_io_connect[6] ? pc_out[6] : 1'bz));
+assign pc[7] = tim4_ocap_io_connect ? tim4_oca : (pioc_out_io_connect[7] ? pc_out[7] : 1'bz);
 
 assign pd_in[0] = pd[0];
 assign pd_in[1] = pd[1];
@@ -260,10 +260,10 @@ assign pd_in[5] = pd[5];
 assign pd_in[6] = pd[6];
 assign pd_in[7] = pd[7];
 assign uart_rx = pd[2];
-assign pd[0] = tim0_ocb_io_connact ? tim0_ocb : (piod_out_io_connect[0] ? pd_out[0] : 1'bz);
+assign pd[0] = tim0_ocb_io_connect ? tim0_ocb : (piod_out_io_connect[0] ? pd_out[0] : 1'bz);
 assign pd[1] = piod_out_io_connect[1] ? pd_out[1] : 1'bz;
 assign pd[2] = piod_out_io_connect[2] ? pd_out[2] : 1'bz;
-assign pd[3] = uart_tx_io_connact ? uart_tx : (piod_out_io_connect[3] ? pd_out[3] : 1'bz);
+assign pd[3] = uart_tx_io_connect ? uart_tx : (piod_out_io_connect[3] ? pd_out[3] : 1'bz);
 assign pd[4] = piod_out_io_connect[4] ? pd_out[4] : 1'bz;
 assign pd[5] = piod_out_io_connect[5] ? pd_out[5] : 1'bz;
 assign pd[6] = piod_out_io_connect[6] ? pd_out[6] : 1'bz;
@@ -666,7 +666,7 @@ atmega_uart # (
 
 	.rx(uart_rx),
 	.tx(uart_tx),
-	.tx_connect(uart_tx_io_connact)
+	.tx_connect(uart_tx_io_connect)
 	);
 end
 else
@@ -676,7 +676,7 @@ assign dat_uart0_d_out = 1'b0;
 assign int_usart1_rx = 1'b0;
 assign int_usart1_tx = 1'b0;
 assign int_usart1_udre = 1'b0;
-assign uart_tx_io_connact = 1'b0;
+assign uart_tx_io_connect = 1'b0;
 end
 endgenerate
 /* UART */
@@ -742,8 +742,8 @@ atmega_tim_8bit # (
 	.t(),
 	.oca(tim0_oca),
 	.ocb(tim0_ocb),
-	.oca_io_connect(tim0_oca_io_connact),
-	.ocb_io_connect(tim0_ocb_io_connact)
+	.oca_io_connect(tim0_oca_io_connect),
+	.ocb_io_connect(tim0_ocb_io_connect)
 	);
 end
 else
@@ -752,8 +752,8 @@ assign io_tim0_d_out = 0;
 assign dat_tim0_d_out = 0;
 assign int_timer0_ovf = 1'b0;
 assign int_timer0_compa = 1'b0;
-assign tim0_oca_io_connact = 1'b0;
-assign tim0_ocb_io_connact = 1'b0;
+assign tim0_oca_io_connect = 1'b0;
+assign tim0_ocb_io_connect = 1'b0;
 end
 endgenerate
 /* !TIMER 0 */
@@ -823,9 +823,9 @@ atmega_tim_16bit # (
 	.ocb(tim1_ocb),
 	.occ(tim1_occ),
 	.ocd(),
-	.oca_io_connect(tim1_oca_io_connact),
-	.ocb_io_connect(tim1_ocb_io_connact),
-	.occ_io_connect(tim1_occ_io_connact),
+	.oca_io_connect(tim1_oca_io_connect),
+	.ocb_io_connect(tim1_ocb_io_connect),
+	.occ_io_connect(tim1_occ_io_connect),
 	.ocd_io_connect()
 	);
 end
@@ -902,9 +902,9 @@ atmega_tim_16bit # (
 	.ocb(tim3_ocb),
 	.occ(tim3_occ),
 	.ocd(),
-	.oca_io_connect(tim3_oca_io_connact),
-	.ocb_io_connect(tim3_ocb_io_connact),
-	.occ_io_connect(tim3_occ_io_connact),
+	.oca_io_connect(tim3_oca_io_connect),
+	.ocb_io_connect(tim3_ocb_io_connect),
+	.occ_io_connect(tim3_occ_io_connect),
 	.ocd_io_connect()
 	);
 end
@@ -1006,14 +1006,14 @@ atmega_tim_10bit # (
 	.ocb(tim4_ocb),
 	.occ(tim4_occ),
 	.ocd(tim4_ocd),
-	.ocap_io_connect(tim4_ocap_io_connact),
-	.ocan_io_connect(tim4_ocan_io_connact),
-	.ocbp_io_connect(tim4_ocbp_io_connact),
-	.ocbn_io_connect(tim4_ocbn_io_connact),
-	.occp_io_connect(tim4_occp_io_connact),
-	.occn_io_connect(tim4_occn_io_connact),
-	.ocdp_io_connect(tim4_ocdp_io_connact),
-	.ocdn_io_connect(tim4_ocdn_io_connact)
+	.ocap_io_connect(tim4_ocap_io_connect),
+	.ocan_io_connect(tim4_ocan_io_connect),
+	.ocbp_io_connect(tim4_ocbp_io_connect),
+	.ocbn_io_connect(tim4_ocbn_io_connect),
+	.occp_io_connect(tim4_occp_io_connect),
+	.occn_io_connect(tim4_occn_io_connect),
+	.ocdp_io_connect(tim4_ocdp_io_connect),
+	.ocdn_io_connect(tim4_ocdn_io_connect)
 	);
 end
 else

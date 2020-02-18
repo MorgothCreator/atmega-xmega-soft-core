@@ -1031,12 +1031,12 @@ begin
 				TCNTL_ADDR:
 				begin
 					if(TCNTL_ADDR < 'h40)
-						TMP_REG_rd <= TCNTL;
+						TMP_REG_rd <= TCNTH;
 				end
 				ICRL_ADDR:
 				begin
 					if(ICRL_ADDR < 'h40)
-						TMP_REG_rd <= ICRL;
+						TMP_REG_rd <= ICRH;
 				end
 			endcase
 		end
@@ -1046,12 +1046,12 @@ begin
 				TCNTL_ADDR:
 				begin
 					if(TCNTL_ADDR >= 'h40)
-						TMP_REG_rd <= TCNTL;
+						TMP_REG_rd <= TCNTH;
 				end
 				ICRL_ADDR:
 				begin
 					if(ICRL_ADDR >= 'h40)
-						TMP_REG_rd <= ICRL;
+						TMP_REG_rd <= ICRH;
 				end
 			endcase
 		end
