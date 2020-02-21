@@ -122,27 +122,30 @@ begin
 				EECR_ADDR: 
 				begin
 					EECR <= bus_in;
-					if(bus_in[2:1] == 2'b10)
+					if(EECR[2] | bus_in[1])
 					begin
 						eempe_timeout_cnt <= 3'h4;
 					end
 				end
 			endcase
 		end
-		if((&EECR[2:1]) & |eempe_timeout_cnt)
+		if((&EECR[2:1]) )
 		begin
-			case(EECR[5:4])
-				2'h0, 2'h2: 
-				begin
-					dat_to_write <= ~EEDR_WRITE;
-					eep_wr <= 1'b1;
-				end
-				2'h1: 
-				begin
-					dat_to_write <= 8'h00;
-					eep_wr <= 1'b1;
-				end
-			endcase
+			if(|eempe_timeout_cnt)
+			begin
+				case(EECR[5:4])
+					2'h0, 2'h2: 
+					begin
+						dat_to_write <= ~EEDR_WRITE;
+						eep_wr <= 1'b1;
+					end
+					2'h1: 
+					begin
+						dat_to_write <= 8'h00;
+						eep_wr <= 1'b1;
+					end
+				endcase
+			end
 			EECR[2:1] <= 2'b00;
 			if(int_p == int_n)
 			begin
